@@ -6,5 +6,5 @@ fn main() {
 
     let v3 = v1 + v2;
 
-    println!("{}, {}, {}", v3.x, v3.y, v3.z);
+    println!("{}, length: {}, unit: {}", v3, v3.length(), v3.as_unit_vector());
 }
