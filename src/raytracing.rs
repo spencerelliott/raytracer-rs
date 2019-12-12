@@ -1,0 +1,166 @@
+use std::ops;
+use std::fmt;
+
+/// Describes a collision between a `Ray` and a point
+#[derive(Copy, Clone)]
+pub struct HitRecord<'a> {
+    pub time: f32,
+    pub point: Vector3,
+    pub normal: Vector3,
+    pub material: &'a dyn Material
+}
+
+pub trait Material {
+    /// Calculates the next bounced ray after a hit at a point and returns
+    /// whether or not the ray has been absorbed
+    /// 
+    /// # Arguments
+    /// 
+    /// * `ray` - The initial ray direction
+    /// * `hit_record` - The latest information about where the `Ray` hit last
+    /// * `attenuation` - The amount of attenuation to apply to the final colour
+    /// * `scattered` - The newly calculated `Ray` to use when checking for hits
+    fn scatter(self, ray: &Ray, hit_record: &HitRecord, attenuation: &mut Vector3, scattered: &mut Ray) -> bool;
+}
+
+pub trait Hitable {
+    /// Determines and returns whether a ray intersects this object
+    /// 
+    /// # Arguments
+    /// 
+    /// * `ray` - The incoming ray direction
+    /// * `time_min` - The minimum time value in which the ray will register a hit
+    /// * `time_max` - The maximum time value in which the ray will register a hit
+    /// * `hit_record` - The hit record that will contain all information about the hit 
+    fn hit(self, ray: &Ray, time_min: f32, time_max: f32, hit_record: &mut HitRecord) -> bool;
+}
+
+/// Represents a vector with an initial point and a direction
+#[derive(Copy, Clone)]
+pub struct Ray<'a> {
+    pub origin: &'a Vector3,
+    pub direction: &'a Vector3
+}
+
+impl<'a> fmt::Display for Ray<'a> {
+    fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+        formatter.write_fmt(format_args!("Ray[{}, {}]", *self.origin, *self.direction))
+    }
+}
+
+impl<'a> Ray<'a> {
+    /// Calculates a point along the long based on time
+    /// 
+    /// # Arguments
+    /// 
+    /// * `time` - a floating point number representing the position along the line
+    /// 
+    /// # Returns
+    /// A new `Vector3` representing the point along the line
+    pub fn point_at_parameter(self, time: f32) -> Vector3 {
+        *self.origin + (*self.direction * time)
+    }
+}
+
+/// Represents a point in space
+#[derive(Copy, Clone)]
+pub struct Vector3 {
+    pub x: f32,
+    pub y: f32,
+    pub z: f32
+}
+
+impl fmt::Display for Vector3 {
+    fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+        formatter.write_fmt(format_args!("Vec3[{}, {}, {}]", self.x, self.y, self.z))
+    }
+}
+
+impl Vector3 {
+    pub fn length(self) -> f32 {
+        (self.x * self.x) + (self.y * self.y) + (self.z * self.z)
+    }
+ 
+    pub fn squared_length(self) -> f32 {
+        self.length().sqrt()
+    }
+
+    pub fn dot(self, other: Vector3) -> f32 {
+        self.x * other.x + self.y * other.y + self.z * other.z
+    }
+
+    pub fn cross(self, other: Vector3) -> Vector3 {
+        Vector3 {
+            x: self.y * other.z - self.z * other.x,
+            y: -(self.x * other.z - self.z * other.x),
+            z: self.x * other.y - self.y * other.x
+        }
+    }
+
+    /// Returns a normalized `Vector3`
+    pub fn as_unit_vector(self) -> Vector3 {
+        let k = 1.0 / self.length();
+
+        Vector3 {
+            x: self.x * k,
+            y: self.y * k,
+            z: self.z * k
+        }
+    }
+}
+
+impl ops::Add for Vector3 {
+    type Output = Vector3;
+
+    fn add(self, _rhs: Vector3) -> Vector3 {
+        Vector3 { x: self.x + _rhs.x,  y: self.y + _rhs.y, z: self.z + _rhs.z }
+    }
+}
+
+impl ops::Sub for Vector3 {
+    type Output = Vector3;
+
+    fn sub(self, _rhs: Vector3) -> Vector3 {
+        Vector3 { x: self.x - _rhs.x, y: self.y - _rhs.y, z: self.z - _rhs.z }
+    }
+}
+
+impl ops::Mul for Vector3 {
+    type Output = Vector3;
+
+    fn mul(self, _rhs: Vector3) -> Vector3 {
+        Vector3 { x: self.x * _rhs.x, y: self.y * _rhs.y, z: self.z * _rhs.z }
+    }
+}
+
+impl ops::Mul<f32> for Vector3 {
+    type Output = Vector3;
+
+    fn mul(self, _rhs: f32) -> Vector3 {
+        Vector3 {
+            x: self.x * _rhs,
+            y: self.y * _rhs,
+            z: self.z * _rhs
+        }
+    }
+}
+
+impl ops::Div for Vector3 {
+    type Output = Vector3;
+
+    fn div(self, _rhs: Vector3) -> Vector3 {
+        Vector3 { x: self.x / _rhs.x, y: self.y / _rhs.y, z: self.z / _rhs.z }
+    }
+}
+
+impl ops::Div<f32> for Vector3 {
+    type Output = Vector3;
+
+    fn div(self, _rhs: f32) -> Vector3 {
+        Vector3 {
+            x: self.x / _rhs,
+            y: self.y / _rhs,
+            z: self.z / _rhs
+        }
+    }
+}
