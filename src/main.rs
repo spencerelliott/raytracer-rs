@@ -1,4 +1,5 @@
 mod vec3;
+mod ray;
 
 fn main() {
     let v1 = vec3::Vector3 { x: 1.0, y: 2.0, z: 3.0 };
