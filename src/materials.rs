@@ -12,11 +12,9 @@ impl Material for Lambertian {
         scattered.origin = hit_record.point.clone();
         scattered.direction = target - hit_record.normal;
 
-        attenuation.x = self.albedo.x.clone();
-        attenuation.y = self.albedo.y.clone();
-        attenuation.z = self.albedo.z.clone();
+        *attenuation = self.albedo;
 
-        return true;
+        true
     }
 }
 
