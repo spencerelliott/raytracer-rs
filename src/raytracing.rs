@@ -37,18 +37,18 @@ pub trait Hitable {
 
 /// Represents a vector with an initial point and a direction
 #[derive(Copy, Clone)]
-pub struct Ray<'a> {
-    pub origin: &'a Vector3,
-    pub direction: &'a Vector3
+pub struct Ray {
+    pub origin: Vector3,
+    pub direction: Vector3
 }
 
-impl<'a> fmt::Display for Ray<'a> {
+impl fmt::Display for Ray {
     fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-        formatter.write_fmt(format_args!("Ray[{}, {}]", *self.origin, *self.direction))
+        formatter.write_fmt(format_args!("Ray[{}, {}]", self.origin, self.direction))
     }
 }
 
-impl<'a> Ray<'a> {
+impl Ray {
     /// Calculates a point along the long based on time
     /// 
     /// # Arguments
@@ -58,7 +58,7 @@ impl<'a> Ray<'a> {
     /// # Returns
     /// A new `Vector3` representing the point along the line
     pub fn point_at_parameter(self, time: f32) -> Vector3 {
-        *self.origin + (*self.direction * time)
+        self.origin + (self.direction * time)
     }
 }
 
@@ -142,6 +142,14 @@ impl ops::Mul<f32> for Vector3 {
             y: self.y * _rhs,
             z: self.z * _rhs
         }
+    }
+}
+
+impl ops::Mul<Vector3> for f32 {
+    type Output = Vector3;
+
+    fn mul(self, _rhs: Vector3) -> Vector3 {
+        _rhs * self
     }
 }
 
