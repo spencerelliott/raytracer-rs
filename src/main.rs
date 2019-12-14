@@ -1,6 +1,7 @@
 mod raytracing;
 mod materials;
 mod random;
+mod geometry;
 
 fn main() {
     let v1 = raytracing::Vector3 { x: 1.0, y: 2.0, z: 3.0 };

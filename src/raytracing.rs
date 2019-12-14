@@ -20,10 +20,10 @@ pub trait Material {
     /// * `hit_record` - The latest information about where the `Ray` hit last
     /// * `attenuation` - The amount of attenuation to apply to the final colour
     /// * `scattered` - The newly calculated `Ray` to use when checking for hits
-    fn scatter(self, ray: &Ray, hit_record: &HitRecord, attenuation: &mut Vector3, scattered: &mut Ray) -> bool;
+    fn scatter(self, ray: &Ray, hit_record: &HitRecord, attenuation: &Vector3, scattered: &Ray) -> Option<(Ray, Vector3)>;
 }
 
-pub trait Hitable {
+pub trait Hitable<'a> {
     /// Determines and returns whether a ray intersects this object
     /// 
     /// # Arguments
@@ -32,7 +32,7 @@ pub trait Hitable {
     /// * `time_min` - The minimum time value in which the ray will register a hit
     /// * `time_max` - The maximum time value in which the ray will register a hit
     /// * `hit_record` - The hit record that will contain all information about the hit 
-    fn hit(self, ray: &Ray, time_min: f32, time_max: f32, hit_record: &mut HitRecord) -> bool;
+    fn hit(self, ray: &Ray, time_min: f32, time_max: f32, hit_record: &mut HitRecord) -> Option<HitRecord<'a>>;
 }
 
 /// Represents a vector with an initial point and a direction
@@ -85,7 +85,7 @@ impl Vector3 {
         self.length().sqrt()
     }
 
-    pub fn dot(self, other: Vector3) -> f32 {
+    pub fn dot(self, other: &Vector3) -> f32 {
         self.x * other.x + self.y * other.y + self.z * other.z
     }
 

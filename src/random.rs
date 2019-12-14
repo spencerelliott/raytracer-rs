@@ -14,12 +14,12 @@ pub fn random_f32_0_to_1() -> f32 {
 }
 
 pub fn random_in_unit_sphere() -> Vector3 {
-    let mut inSphere: Vector3 = Vector3{ x: 0.0, y: 0.0, z: 0.0 };
+    let mut in_sphere: Vector3;
 
     while {
-        inSphere = 2.0 * Vector3 {x: random_f32(), y: random_f32(), z: random_f32()};
-        inSphere.length() >= 1.0
+        in_sphere = 2.0 * Vector3 {x: random_f32(), y: random_f32(), z: random_f32()};
+        in_sphere.length() >= 1.0
     } {}
 
-    inSphere
+    in_sphere
 }
