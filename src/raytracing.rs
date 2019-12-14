@@ -1,6 +1,25 @@
 use std::ops;
 use std::fmt;
 
+pub fn check_for_hit<'a>(hitables: &Vec<&dyn Hitable<'a>>, ray: &Ray, time_min: f32, time_max: f32) -> Option<HitRecord<'a>> {
+    let mut hit_record: Option<HitRecord> = None;
+    let mut closest = time_max;
+
+    for hitable in hitables {
+        let hit_result = hitable.hit(ray, time_min, closest);
+
+        match hit_result {
+            Some(hit_result) => {
+                closest = hit_result.time;
+                hit_record = Some(hit_result);
+            },
+            None => { }
+        }
+    }
+
+    hit_record
+}
+
 /// Describes a collision between a `Ray` and a point
 #[derive(Copy, Clone)]
 pub struct HitRecord<'a> {
@@ -32,7 +51,7 @@ pub trait Hitable<'a> {
     /// * `time_min` - The minimum time value in which the ray will register a hit
     /// * `time_max` - The maximum time value in which the ray will register a hit
     /// * `hit_record` - The hit record that will contain all information about the hit 
-    fn hit(self, ray: &Ray, time_min: f32, time_max: f32, hit_record: &mut HitRecord) -> Option<HitRecord<'a>>;
+    fn hit(&self, ray: &Ray, time_min: f32, time_max: f32) -> Option<HitRecord<'a>>;
 }
 
 /// Represents a vector with an initial point and a direction

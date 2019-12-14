@@ -5,8 +5,8 @@ fn reflect(vector: &Vector3, normal: &Vector3) -> Vector3 {
     *vector - 2.0 * vector.dot(normal) * *normal
 }
 
-struct Lambertian {
-    albedo: Vector3
+pub struct Lambertian {
+    pub albedo: Vector3
 }
 
 impl Material for Lambertian {
@@ -17,9 +17,9 @@ impl Material for Lambertian {
     }
 }
 
-struct Metal {
-    albedo: Vector3,
-    fuzz: f32
+pub struct Metal {
+    pub albedo: Vector3,
+    pub fuzz: f32
 }
 
 impl Material for Metal {
@@ -35,8 +35,8 @@ impl Material for Metal {
     }
 }
 
-struct Dielectric {
-    refraction_index: f32
+pub struct Dielectric {
+    pub refraction_index: f32
 }
 
 impl Material for Dielectric {
