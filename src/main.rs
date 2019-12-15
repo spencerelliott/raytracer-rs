@@ -6,10 +6,11 @@ mod raytracing;
 
 use std::fs::File;
 use std::io::prelude::*;
+use std::time::{SystemTime, UNIX_EPOCH};
 
-const WIDTH: i32 = 320;
-const HEIGHT: i32 = 180;
-const SAMPLES: i32 = 2;
+const WIDTH: i32 = 640;
+const HEIGHT: i32 = 360;
+const SAMPLES: i32 = 20;
 
 fn get_screen_space_color<'a>(
     ray: &raytracing::Ray,
@@ -19,7 +20,7 @@ fn get_screen_space_color<'a>(
     if let Some(hit_record) = raytracing::check_for_hit(hitables, ray, 0.001, std::f32::MAX) {
         if let Some((scattered, attenuation)) = hit_record.material.scatter(ray, &hit_record) {
             if depth < 50 {
-                return attenuation * get_screen_space_color(ray, hitables, depth + 1);
+                return attenuation * get_screen_space_color(&scattered, hitables, depth + 1);
             } else {
                 return raytracing::Vector3::ZERO;
             }
@@ -72,7 +73,7 @@ fn main() -> std::io::Result<()> {
             albedo: raytracing::Vector3 {
                 x: 0.8,
                 y: 0.8,
-                z: 0.8,
+                z: 0.0,
             },
         },
     };
@@ -102,6 +103,8 @@ fn main() -> std::io::Result<()> {
         (WIDTH / HEIGHT) as f32,
     );
 
+    let start_time = SystemTime::now();
+
     let mut p3_file = File::create("out.ppm")?;
     p3_file.write_fmt(format_args!("P3\n{} {}\n255\n", WIDTH, HEIGHT))?;
 
@@ -110,8 +113,8 @@ fn main() -> std::io::Result<()> {
             let mut color = raytracing::Vector3::ZERO;
 
             for _sample in 0..SAMPLES {
-                let u = x_pixel as f32 + random::random_f32() / WIDTH as f32;
-                let v = y_pixel as f32 + random::random_f32() / HEIGHT as f32;
+                let u = (x_pixel as f32 + random::random_f32()) / WIDTH as f32;
+                let v = (y_pixel as f32 + random::random_f32()) / HEIGHT as f32;
 
                 let ray = camera.get_ray(u, v);
 
@@ -132,6 +135,16 @@ fn main() -> std::io::Result<()> {
             ))?;
         }
     }
+
+    let end_time = SystemTime::now();
+
+    println!(
+        "It took {} seconds to generate the image",
+        end_time
+            .duration_since(start_time)
+            .expect("Time went backwards")
+            .as_secs()
+    );
 
     Ok(())
 }

@@ -112,7 +112,7 @@ impl Vector3 {
 
     pub fn cross(self, other: Vector3) -> Vector3 {
         Vector3 {
-            x: self.y * other.z - self.z * other.x,
+            x: self.y * other.z - self.z * other.y,
             y: -(self.x * other.z - self.z * other.x),
             z: self.x * other.y - self.y * other.x,
         }

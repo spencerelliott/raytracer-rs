@@ -10,10 +10,10 @@ pub struct Lambertian {
 }
 
 impl Material for Lambertian {
-    fn scatter(&self, ray: &Ray, hit_record: &HitRecord) -> Option<(Ray, Vector3)> {
+    fn scatter(&self, _ray: &Ray, hit_record: &HitRecord) -> Option<(Ray, Vector3)> {
         let target = hit_record.point + hit_record.normal + random_in_unit_sphere();
 
-        Some((Ray {origin: hit_record.point, direction: target - hit_record.normal}, self.albedo))
+        Some((Ray {origin: hit_record.point, direction: target - hit_record.point}, self.albedo))
     }
 }
 

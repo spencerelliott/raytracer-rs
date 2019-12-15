@@ -1,10 +1,10 @@
-use crate::raytracing::{Vector3, Ray};
+use crate::raytracing::{Ray, Vector3};
 
 pub struct Camera {
     pub origin: Vector3,
     pub lower_left: Vector3,
     pub horizontal: Vector3,
-    pub vertical: Vector3
+    pub vertical: Vector3,
 }
 
 impl Camera {
@@ -21,14 +21,14 @@ impl Camera {
             origin: look_from,
             lower_left: look_from - half_width * u - half_height * v - w,
             horizontal: 2.0 * half_width * u,
-            vertical: 2.0 * half_height * v
+            vertical: 2.0 * half_height * v,
         }
     }
 
     pub fn get_ray(&self, u: f32, v: f32) -> Ray {
         Ray {
             origin: self.origin,
-            direction: self.lower_left + u * self.horizontal + v * self.vertical - self.origin,
+            direction: self.lower_left + (u * self.horizontal) + (v * self.vertical) - self.origin,
         }
     }
 }
