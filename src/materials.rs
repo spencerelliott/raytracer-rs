@@ -10,7 +10,7 @@ pub struct Lambertian {
 }
 
 impl Material for Lambertian {
-    fn scatter(self, ray: &Ray, hit_record: &HitRecord, attenuation: &Vector3, scattered: &Ray) -> Option<(Ray, Vector3)> {
+    fn scatter(&self, ray: &Ray, hit_record: &HitRecord) -> Option<(Ray, Vector3)> {
         let target = hit_record.point + hit_record.normal + random_in_unit_sphere();
 
         Some((Ray {origin: hit_record.point, direction: target - hit_record.normal}, self.albedo))
@@ -23,7 +23,7 @@ pub struct Metal {
 }
 
 impl Material for Metal {
-    fn scatter(self, ray: &Ray, hit_record: &HitRecord, attenuation: &Vector3, scattered: &Ray) -> Option<(Ray, Vector3)> {
+    fn scatter(&self, ray: &Ray, hit_record: &HitRecord) -> Option<(Ray, Vector3)> {
         let reflected = reflect(&ray.direction.as_unit_vector(), &hit_record.normal);
         let scatter = Ray{origin: hit_record.point, direction: reflected + self.fuzz * random_in_unit_sphere()};
 
@@ -40,7 +40,7 @@ pub struct Dielectric {
 }
 
 impl Material for Dielectric {
-    fn scatter(self, ray: &Ray, hit_record: &HitRecord, attenuation: &Vector3, scattered: &Ray) -> Option<(Ray, Vector3)> {
+    fn scatter(&self, ray: &Ray, hit_record: &HitRecord) -> Option<(Ray, Vector3)> {
         None
     }
 }
