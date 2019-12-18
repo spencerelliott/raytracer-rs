@@ -8,10 +8,10 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::time::SystemTime;
 
-const WIDTH: i32 = 1280;
-const HEIGHT: i32 = 720;
-const SAMPLES: i32 = 15;
-const MAX_DEPTH: i32 = 15;
+const WIDTH: i32 = 640;
+const HEIGHT: i32 = 480;
+const SAMPLES: i32 = 25;
+const MAX_DEPTH: i32 = 50;
 
 fn get_screen_space_color<'a>(
     ray: &raytracing::Ray,
@@ -131,7 +131,7 @@ fn main() -> std::io::Result<()> {
             y: 1.0,
             z: 0.0,
         },
-        90.0,
+        80.0,
         (WIDTH / HEIGHT) as f32,
     );
 

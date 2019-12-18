@@ -80,7 +80,7 @@ impl Material for Dielectric {
         if let Some(refracted) = refract(&ray.direction, &outward_normal, ni_over_nt) {
             Some((Ray {
                 origin: hit_record.point,
-                direction: if random_f32_0_to_1() < schlick(cosine, self.refraction_index) { refracted } else { reflected }
+                direction: if random_f32_0_to_1() < schlick(cosine, self.refraction_index) { reflected } else { refracted }
             }, attenuation))
         } else {
             Some((Ray {
