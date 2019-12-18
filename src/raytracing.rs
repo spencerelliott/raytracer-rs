@@ -99,11 +99,11 @@ impl fmt::Display for Vector3 {
 }
 
 impl Vector3 {
-    pub fn length(self) -> f32 {
+    pub fn squared_length(self) -> f32 {
         (self.x * self.x) + (self.y * self.y) + (self.z * self.z)
     }
-    pub fn squared_length(self) -> f32 {
-        self.length().sqrt()
+    pub fn length(self) -> f32 {
+        self.squared_length().sqrt()
     }
 
     pub fn dot(self, other: &Vector3) -> f32 {
