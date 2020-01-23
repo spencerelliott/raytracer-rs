@@ -1,6 +1,7 @@
 /target
 **/*.rs.bk
 .vscode/
-out.ppm
-out.jpg
+*.ppm
+*.jpg
+*.png
 .DS_Store

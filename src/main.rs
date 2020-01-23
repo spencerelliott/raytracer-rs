@@ -11,9 +11,9 @@ use std::time::SystemTime;
 
 use exporter::Exporter;
 
-pub const WIDTH: i32 = 640;
-pub const HEIGHT: i32 = 320;
-const SAMPLES: i32 = 5;
+pub const WIDTH: i32 = 3860;
+pub const HEIGHT: i32 = 2140;
+const SAMPLES: i32 = 1;
 const MAX_DEPTH: i32 = 5;
 
 fn get_screen_space_color<'a>(
