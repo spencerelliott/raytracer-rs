@@ -2,3 +2,5 @@
 **/*.rs.bk
 .vscode/
 out.ppm
+out.jpg
+.DS_Store

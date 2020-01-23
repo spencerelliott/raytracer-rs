@@ -1,17 +1,20 @@
+extern crate oidn;
+
 mod camera;
 mod geometry;
 mod materials;
 mod random;
 mod raytracing;
+mod exporter;
 
-use std::fs::File;
-use std::io::prelude::*;
 use std::time::SystemTime;
 
-const WIDTH: i32 = 640;
-const HEIGHT: i32 = 480;
-const SAMPLES: i32 = 25;
-const MAX_DEPTH: i32 = 50;
+use exporter::Exporter;
+
+pub const WIDTH: i32 = 640;
+pub const HEIGHT: i32 = 320;
+const SAMPLES: i32 = 5;
+const MAX_DEPTH: i32 = 5;
 
 fn get_screen_space_color<'a>(
     ray: &raytracing::Ray,
@@ -76,7 +79,7 @@ fn main() -> std::io::Result<()> {
                 y: 0.6,
                 z: 0.3,
             },
-            fuzz: 0.3,
+            fuzz: 0.01,
         },
     };
 
@@ -88,7 +91,7 @@ fn main() -> std::io::Result<()> {
         },
         radius: 0.5,
         material: &materials::Dielectric {
-            refraction_index: 2.4,
+            refraction_index: 2.0,
         },
     };
 
@@ -131,15 +134,15 @@ fn main() -> std::io::Result<()> {
             y: 1.0,
             z: 0.0,
         },
-        80.0,
-        (WIDTH / HEIGHT) as f32,
+        90.0,
+        WIDTH as f32 / HEIGHT as f32,
     );
 
     let start_time = SystemTime::now();
 
-    let mut p3_file = File::create("out.ppm")?;
-    p3_file.write_fmt(format_args!("P3\n{} {}\n255\n", WIDTH, HEIGHT))?;
-
+    let pixel_export = &mut exporter::P3Exporter::new(WIDTH, HEIGHT, "out.ppm".to_string());
+    //let pixel_export = &mut exporter::OidnExporter::new(WIDTH, HEIGHT, "out.jpg".to_string());
+    
     for y_pixel in (0..HEIGHT).rev() {
         for x_pixel in 0..WIDTH {
             let mut color = raytracing::Vector3::ZERO;
@@ -161,12 +164,13 @@ fn main() -> std::io::Result<()> {
             }
             .modify(|value: f32| value * 255.99);
 
-            p3_file.write_fmt(format_args!(
-                "{} {} {}\n",
-                color.x as i32, color.y as i32, color.z as i32
-            ))?;
+            pixel_export.push_pixel(color.x, color.y, color.z);
+
+            print!("{:04}x{:04}\r", x_pixel, y_pixel);
         }
     }
+
+    pixel_export.finish();
 
     let end_time = SystemTime::now();
 
